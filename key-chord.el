@@ -54,6 +54,12 @@ sure when executing whether two keys were typed quickly or slowly
 when recorded.)"
   :type 'boolean)
 
+(defcustom key-chord-min-delay 0.05
+  "Minimum delay (in seconds) between two presses for a double-tap key-chord to be recognized.
+If the delay between two identical key presses is less than this value (as when holding a key),
+the chord will not trigger."
+  :type 'float)
+
 ;; Internal vars
 (defvar key-chord-mode nil)
 
@@ -173,7 +179,8 @@ Commands. Please ignore that."
   (cond
    ((and (not (eq first-char key-chord-last-unmatched))
          (key-chord-lookup-key (vector 'key-chord first-char)))
-    (let ((delay (if (key-chord-lookup-key
+    (let ((start-time (current-time))
+          (delay (if (key-chord-lookup-key
                       (vector 'key-chord first-char first-char))
                      key-chord-one-key-delay
                    key-chord-two-keys-delay)))
