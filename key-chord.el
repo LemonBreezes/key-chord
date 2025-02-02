@@ -194,17 +194,23 @@ Commands. Please ignore that."
             (t ; input-pending-p
              (let* ((input-method-function nil)
                     (next-char (read-event))
+                    (elapsed (float-time (time-subtract (current-time) start-time)))
                     (res (vector 'key-chord first-char next-char)))
-               (cond ((key-chord-lookup-key res)
-                      (setq key-chord-defining-kbd-macro
-                            (cons first-char key-chord-defining-kbd-macro))
-                      (list 'key-chord first-char next-char))
-                     (t ;put back next-char and return first-char
-                      (setq unread-command-events
-                            (cons next-char unread-command-events))
-                      (when (eq first-char next-char)
-                        (setq key-chord-last-unmatched first-char))
-                      (list first-char))))))))
+               (if (and (eq first-char next-char)
+                        (< elapsed key-chord-min-delay))
+                   (progn
+                     (setq unread-command-events (cons next-char unread-command-events))
+                     (setq key-chord-last-unmatched first-char)
+                     (list first-char))
+                 (if (key-chord-lookup-key res)
+                     (progn
+                       (setq key-chord-defining-kbd-macro
+                             (cons first-char key-chord-defining-kbd-macro))
+                       (list 'key-chord first-char next-char))
+                   (setq unread-command-events (cons next-char unread-command-events))
+                   (when (eq first-char next-char)
+                     (setq key-chord-last-unmatched first-char))
+                   (list first-char))))))))
    (t ; no key-chord keymap
     (setq key-chord-last-unmatched first-char)
     (list first-char))))
