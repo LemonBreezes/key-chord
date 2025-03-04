@@ -210,10 +210,8 @@ COMMAND can be an interactive function, a string, or nil.
 If COMMAND is nil, the key-chord is removed."
   (if (/= 2 (length keys))
       (error "Key-chord keys must have two elements"))
-  ;; Exotic chars in a string are >255 but define-key wants 128..255
-  ;; for those.
-  (let ((key1 (logand 255 (aref keys 0)))
-        (key2 (logand 255 (aref keys 1))))
+  (let ((key1 (aref keys 0))
+        (key2 (aref keys 1)))
     (if (eq key1 key2)
         (define-key keymap (vector 'key-chord key1 key2) command)
       (define-key keymap (vector 'key-chord key1 key2) command)
@@ -291,7 +289,7 @@ Commands. Please ignore that."
   (cond
    ;; Skip non-byte characters
    ((not (and (integerp first-char)
-              (<= first-char 255)))
+              (< first-char 256)))
     (list first-char))
 
    ;; Skip chord detection if in typing mode (but not during macro execution)
