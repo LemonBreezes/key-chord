@@ -221,7 +221,7 @@ Commands. Please ignore that."
 
     ;; Set idle timer to reset typing mode after idle period
     (setq key-chord-typing-timer
-          (run-with-idle-timer key-chord-typing-reset-delay nil
+          (run-at-time key-chord-typing-reset-delay nil
                               #'key-chord-reset-typing-mode))
 
     ;; Check if we're in typing flow based on timing
