@@ -251,7 +251,7 @@ Commands. Please ignore that."
    ;; or if the key is not in a recorded chord
    ((and executing-kbd-macro
          (or (not key-chord-in-macros)
-             (not (member first-char key-chord-in-last-kbd-macro))))
+             (not (memq first-char key-chord-in-last-kbd-macro))))
     (setq key-chord-last-unmatched first-char)
     (list first-char))
 
