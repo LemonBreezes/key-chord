@@ -289,6 +289,11 @@ Commands. Please ignore that."
     (key-chord-check-typing-flow (current-time)))
 
   (cond
+   ;; Skip non-byte characters
+   ((not (and (integerp first-char)
+              (<= first-char 255)))
+    (list first-char))
+
    ;; Skip chord detection if in typing mode (but not during macro execution)
    ((and key-chord-typing-detection
          key-chord-in-typing-flow
