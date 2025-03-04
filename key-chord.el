@@ -208,10 +208,15 @@ can be used.
 
 COMMAND can be an interactive function, a string, or nil.
 If COMMAND is nil, the key-chord is removed."
-  (if (/= 2 (length keys))
-      (error "Key-chord keys must have two elements"))
+  (when (/= 2 (length keys))
+    (error "Key-chord keys must have two elements"))
   (let ((key1 (aref keys 0))
         (key2 (aref keys 1)))
+    ;; Check that both keys are bytes
+    (unless (and (integerp key1) (< key1 256)
+                 (integerp key2) (< key2 256))
+      (error "Key-chord keys must both be bytes (characters with codes < 256)"))
+    
     (if (eq key1 key2)
         (define-key keymap (vector 'key-chord key1 key2) command)
       (define-key keymap (vector 'key-chord key1 key2) command)
