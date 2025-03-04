@@ -100,12 +100,13 @@ Key-chord provides several customization options:
 - `key-chord-one-key-min-delay` (default: 0.05) - Minimum delay between two
   presses for a double-tap key-chord to be recognized.
 - `key-chord-typing-detection` (default: nil) - Try to detect when user is
-  typing text and disable chord detection temporarily. Also improves
-  `key-chord-input-method` performance while typing.
+  typing text and disable chord detection temporarily.
 - `key-chord-typing-speed-threshold` (default: 0.1) - Maximum delay between
   keystrokes to be considered part of typing flow.
 - `key-chord-typing-reset-delay` (default: 0.5) - Time after which to reset
   typing detection if no keys are pressed.
+- `key-chord-use-key-tracking` (default: t) - Track which keys are used in
+  chords to optimize performance by avoiding unnecessary lookups.
 
 ## Typing Detection
 
@@ -122,6 +123,18 @@ To enable typing detection:
 You can customize the typing detection sensitivity with:
 - `key-chord-typing-speed-threshold`: Adjust how fast keystrokes need to be to be considered "typing"
 - `key-chord-typing-reset-delay`: How long to wait after typing stops before re-enabling chord detection
+
+## Performance Optimization
+
+Key-chord includes a performance optimization that tracks which keys are part of any defined chord. This allows it to quickly skip the expensive keymap lookup process for keys that aren't used in any chord.
+
+This optimization is enabled by default and controlled by the `key-chord-use-key-tracking` variable. It's particularly beneficial when:
+- You have only a few key chords defined but type a lot of text
+- You're experiencing lag during fast typing
+- You're using key-chord in performance-sensitive contexts
+
+Enabling `key-chord-typing-detection` also helps improve performance by reducing
+the number of chord lookups during fast typing.
 
 ## Tips
 
