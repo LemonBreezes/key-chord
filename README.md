@@ -206,7 +206,7 @@ When key-chord-mode is enabled `input-method-function` is set to
 
 ## History
 
-- 0.7.1 (Current) 
+- 0.8.1 (Current) 
   Add typing detection to prevent accidental chord triggering
   Add minimum delay for double-tap chords
   Performance improvements
