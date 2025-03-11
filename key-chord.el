@@ -56,7 +56,7 @@ enabling this as it could cause key chords to be expanded in places
 where they shouldn't be)."
   :type 'boolean)
 
-(defcustom key-chord-one-key-min-delay 0.05
+(defcustom key-chord-one-key-min-delay 0.0
   "Minimum delay (in seconds) between two presses for a double-tap key-chord (using the same key)
 to be recognized.  If the delay between two identical key presses is less than this value (as when holding a key),
 the chord will not trigger."

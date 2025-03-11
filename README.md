@@ -97,7 +97,7 @@ Key-chord provides several customization options:
   of the same key to be considered a key chord.
 - `key-chord-in-macros` (default: nil) - Whether to expand key chords when
   executing keyboard macros.
-- `key-chord-one-key-min-delay` (default: 0.05) - Minimum delay between two
+- `key-chord-one-key-min-delay` (default: 0.0) - Minimum delay between two
   presses for a double-tap key-chord to be recognized.
 - `key-chord-typing-detection` (default: nil) - Try to detect when user is
   typing text and disable chord detection temporarily.
