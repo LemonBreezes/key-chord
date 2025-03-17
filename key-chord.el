@@ -134,10 +134,13 @@ If COMMAND is nil, the key-chord is removed."
   (when (/= 2 (length keys))
     (error "Key-chord keys must have two elements"))
   
-  ;; Exotic chars in a string are >255 but define-key wants 128..255
-  ;; for those.
-  (let ((key1 (logand 255 (aref keys 0)))
-        (key2 (logand 255 (aref keys 1))))
+  (let ((key1 (aref keys 0))
+        (key2 (aref keys 1)))
+    ;; Check that both keys are bytes
+    (unless (and (integerp key1) (< key1 256)
+                 (integerp key2) (< key2 256))
+      (error "Key-chord keys must both be bytes (characters with codes < 256)"))
+    
     (if (eq key1 key2)
         (define-key keymap (vector 'key-chord key1 key2) command)
       (define-key keymap (vector 'key-chord key1 key2) command)
