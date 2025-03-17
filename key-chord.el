@@ -44,15 +44,22 @@
 This should normally be a little longer than `key-chord-two-keys-delay'."
   :type 'float)
 
-(defcustom key-chord-in-macros t
+(defcustom key-chord-in-macros nil
   "If nil, don't expand key chords when executing keyboard macros.
 
-If non-nil, expand chord sequenses in macros, but only if a
-similar chord was entered during the last interactive macro
-recording. (This carries a bit of guesswork. We can't know for
-sure when executing whether two keys were typed quickly or slowly
-when recorded.)"
+If non-nil, expand chord sequenses in macros, but only if a similar
+chord was entered during the last interactive macro recording. (This
+carries a bit of guesswork. We can't know for sure when executing
+whether two keys were typed quickly or slowly when recorded. Be careful
+enabling this as it could cause key chords to be expanded in places
+where they shouldn't be)."
   :type 'boolean)
+
+(defcustom key-chord-one-key-min-delay 0.0
+  "Minimum delay (in seconds) between two presses for a double-tap key-chord (using the same key)
+to be recognized.  If the delay between two identical key presses is less than this value (as when holding a key),
+the chord will not trigger."
+  :type 'float)
 
 ;; Internal vars
 (defvar key-chord-mode nil)
