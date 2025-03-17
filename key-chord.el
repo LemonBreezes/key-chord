@@ -131,8 +131,9 @@ can be used.
 
 COMMAND can be an interactive function, a string, or nil.
 If COMMAND is nil, the key-chord is removed."
-  (if (/= 2 (length keys))
-      (error "Key-chord keys must have two elements"))
+  (when (/= 2 (length keys))
+    (error "Key-chord keys must have two elements"))
+  
   ;; Exotic chars in a string are >255 but define-key wants 128..255
   ;; for those.
   (let ((key1 (logand 255 (aref keys 0)))
