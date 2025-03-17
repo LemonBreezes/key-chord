@@ -3,9 +3,11 @@
 ;; Copyright (C) 2003, 2005, 2008, 2012 David Andersson
 
 ;; Author: David Andersson <l.david.andersson(at)sverige.nu>
-;; Package-Version: 0.7.1
+;; Maintainer: LemonBreezes <look@strawberrytea.xyz>
+;; Package-Version: 0.8.1
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: keyboard chord input
+;; URL: https://github.com/LemonBreezes/key-chord
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
