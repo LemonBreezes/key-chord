@@ -63,6 +63,13 @@ to be recognized.  If the delay between two identical key presses is less than t
 the chord will not trigger."
   :type 'float)
 
+(defcustom key-chord-use-key-tracking t
+  "If non-nil, track which keys are used in chords to optimize lookups.
+This improves performance by avoiding unnecessary key-chord-lookup-key calls.
+However, it could potentially cause issues if key chords are defined
+outside of the normal key-chord-define* functions."
+  :type 'boolean)
+
 ;; Internal vars
 (defvar key-chord-mode nil)
 
@@ -75,6 +82,10 @@ the chord will not trigger."
 ;; matching chords during macro execution.
 (defvar key-chord-in-last-kbd-macro nil)
 (defvar key-chord-defining-kbd-macro nil)
+
+;; Key tracking for optimization
+(defvar key-chord-keys-in-use (make-vector 256 nil)
+  "Vector indicating which keys are used in any chord.")
 
 ;;;###autoload
 (define-minor-mode key-chord-mode
@@ -130,6 +141,38 @@ cases is shared with all other buffers in the same major mode."
   (interactive "sUnset key chord locally (2 keys): ")
   (key-chord-define (current-local-map) keys nil))
 
+(defun key-chord-update-keys-in-use (key1 key2 command)
+  "Update the keys-in-use vector based on the chord being defined or removed."
+  (if command
+      (progn
+        ;; Adding a chord - mark keys as in use
+        (aset key-chord-keys-in-use key1 t)
+        (aset key-chord-keys-in-use key2 t))
+    ;; Removing a chord - need to check if keys are used in other chords
+    (let ((remove-key1 t)
+          (remove-key2 t))
+      ;; Check if keys are used in any other chords
+      (let ((maps (list (current-global-map) (current-local-map))))
+        (dolist (map (append maps (current-minor-mode-maps)))
+          (when map
+            ;; Check if key1 is used in any other chord
+            (dotimes (k 256)
+              (when (and (not (and (= k key2) (= key1 key2)))
+                         (or (key-chord-lookup-key1 map (vector 'key-chord key1 k))
+                             (key-chord-lookup-key1 map (vector 'key-chord k key1))))
+                (setq remove-key1 nil)))
+
+            ;; Check if key2 is used in any other chord
+            (dotimes (k 256)
+              (when (and (not (and (= k key1) (= key1 key2)))
+                         (or (key-chord-lookup-key1 map (vector 'key-chord key2 k))
+                             (key-chord-lookup-key1 map (vector 'key-chord k key2))))
+                (setq remove-key2 nil))))))
+
+      ;; Remove keys from tracking vector if not used elsewhere
+      (when remove-key1 (aset key-chord-keys-in-use key1 nil))
+      (when remove-key2 (aset key-chord-keys-in-use key2 nil)))))
+
 ;;;###autoload
 (defun key-chord-define (keymap keys command)
   "Define in KEYMAP, a key-chord of the two keys in KEYS starting a COMMAND.
@@ -153,7 +196,9 @@ If COMMAND is nil, the key-chord is removed."
     (if (eq key1 key2)
         (define-key keymap (vector 'key-chord key1 key2) command)
       (define-key keymap (vector 'key-chord key1 key2) command)
-      (define-key keymap (vector 'key-chord key2 key1) command))))
+      (define-key keymap (vector 'key-chord key2 key1) command))
+    ;; Update the key tracking
+    (key-chord-update-keys-in-use key1 key2 command)))
 
 (defun key-chord-lookup-key1 (keymap key)
   "Like lookup-key but no third arg and no numeric return value."
