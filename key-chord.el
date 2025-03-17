@@ -211,7 +211,6 @@ COMMAND can be an interactive function, a string, or nil.
 If COMMAND is nil, the key-chord is removed."
   (when (/= 2 (length keys))
     (error "Key-chord keys must have two elements"))
-  
   (let ((key1 (aref keys 0))
         (key2 (aref keys 1)))
     ;; Check that both keys are bytes
